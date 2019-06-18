@@ -26,6 +26,7 @@ Reporting process and disclosure communications are outlined in [/org/security](
 It must be built with Go version 1.6 or higher in order for some features to function properly.
 
 In order to enable seccomp support you will need to install `libseccomp` on your platform.
+
 > e.g. `libseccomp-devel` for CentOS, or `libseccomp-dev` for Ubuntu
 
 Otherwise, if you do not want to build `runc` with seccomp support you can add `BUILDTAGS=""` when running make.
@@ -51,7 +52,6 @@ sudo make install
 
 `runc` will be installed to `/usr/local/sbin/runc` on your system.
 
-
 #### Build Tags
 
 `runc` supports optional build tags for compiling support of various features.
@@ -61,14 +61,13 @@ To add build tags to the make option the `BUILDTAGS` variable must be set.
 make BUILDTAGS='seccomp apparmor'
 ```
 
-| Build Tag | Feature                            | Dependency  |
-|-----------|------------------------------------|-------------|
-| seccomp   | Syscall filtering                  | libseccomp  |
-| selinux   | selinux process and mount labeling | <none>      |
-| apparmor  | apparmor profile support           | <none>      |
-| ambient   | ambient capability support         | kernel 4.3  |
-| nokmem    | disable kernel memory account      | <none>      |
-
+| Build Tag | Feature                            | Dependency |
+| --------- | ---------------------------------- | ---------- |
+| seccomp   | Syscall filtering                  | libseccomp |
+| selinux   | selinux process and mount labeling | <none>     |
+| apparmor  | apparmor profile support           | <none>     |
+| ambient   | ambient capability support         | kernel 4.3 |
+| nokmem    | disable kernel memory account      | <none>     |
 
 ### Running the test suite
 
@@ -101,8 +100,8 @@ You can run a test in your proxy environment by setting `DOCKER_BUILD_PROXY` and
 
 ### Dependencies Management
 
-`runc` uses [vndr](https://github.com/LK4D4/vndr) for dependencies management.
-Please refer to [vndr](https://github.com/LK4D4/vndr) for how to add or update
+`runc` uses [Go Modules](https://github.com/golang/go/wiki/Modules) for dependencies management.
+Please refer to [Go Modules](https://github.com/golang/go/wiki/Modules) for how to add or update
 new dependencies.
 
 ## Using runc
@@ -150,7 +149,6 @@ The second way to start a container is using the specs lifecycle operations.
 This gives you more power over how the container is created and managed while it is running.
 This will also launch the container in the background so you will have to edit the `config.json` to remove the `terminal` setting for the simple examples here.
 Your process field in the `config.json` should look like this below with `"terminal": false` and `"args": ["sleep", "5"]`.
-
 
 ```json
         "process": {
@@ -207,7 +205,6 @@ Your process field in the `config.json` should look like this below with `"termi
 
 Now we can go through the lifecycle operations in your shell.
 
-
 ```bash
 # run as root
 cd /mycontainer
@@ -229,7 +226,9 @@ runc delete mycontainerid
 This allows higher level systems to augment the containers creation logic with setup of various settings after the container is created and/or before it is deleted. For example, the container's network stack is commonly set up after `create` but before `start`.
 
 #### Rootless containers
+
 `runc` has the ability to run containers without root privileges. This is called `rootless`. You need to pass some parameters to `runc` in order to run rootless containers. See below and compare with the previous version. Run the following commands as an ordinary user:
+
 ```bash
 # Same as the first example
 mkdir ~/mycontainer
